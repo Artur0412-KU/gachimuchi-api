@@ -1,17 +1,53 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 model Movie {
-  movieId  Int @id @default(autoincrement())
-  name String
-  year_of_production DateTime
+  movieId             Int        @id @default(autoincrement())
+  name                String
+  year_of_production  DateTime
   studio_of_production String?
-  genre String
-  description String
-  link String
+  genre              String
+  description        String
+  link              String
+  characterMovies   CharacterMovie[]
+  memes    Meme[]
+}
+
+model Meme {
+  memeId     Int    @id @default(autoincrement())
+  name       String
+  image_url  String
+  link       String 
+  characterId Int
+  character   Character @relation(fields: [characterId], references: [characterId])
+  movieId Int
+  movie       Movie @relation(fields: [movieId], references: [movieId])
+}
+
+model Character {
+  characterId   Int       @id @default(autoincrement())
+  name          String
+  surname       String
+  image_url     String
+  nickname      String?
+  date_of_birth DateTime
+  date_of_death DateTime?
+  bio           String
+  characterMovies CharacterMovie[]
+  memes          Meme[]
+  galleries      Gallery[]
+}
+
+model CharacterMovie {
+  id          Int      @id @default(autoincrement())
+  characterId Int
+  movieId     Int
+  character   Character @relation(fields: [characterId], references: [characterId])
+  movie       Movie @relation(fields: [movieId], references: [movieId])
+}
+
+model Gallery {
+  galleryId   Int      @id @default(autoincrement())
+  picture_url String
+  characterId Int
+  character   Character @relation(fields: [characterId], references: [characterId])
 }
 
 generator client {
